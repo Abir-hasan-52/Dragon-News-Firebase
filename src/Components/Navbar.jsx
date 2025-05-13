@@ -1,11 +1,24 @@
-import React from "react";
 import { Link, NavLink } from "react-router";
-import user from "../assets/user.png";
+import userIcon from "../assets/user.png";
+import { use } from "react";
+import { AuthContext } from "../Provider/AuthProvider";
 
 const Navbar = () => {
+  const { user, logOut } = use(AuthContext);
+
+  const handleLogOut = () => {
+    // console.log('trying log out')
+    logOut()
+      .then(() => {
+        alert("Sign-out successful.")  
+      })
+      .catch((error) => {
+         console.log(error);
+      });
+  };
   return (
     <div className="flex items-center justify-between mt-5 mb-10">
-      <div className=""> </div>
+      <div className="">{user && user.email} </div>
       <div className="flex gap-5 text-accent items-center">
         <NavLink
           to="/"
@@ -45,8 +58,17 @@ const Navbar = () => {
         </NavLink>
       </div>
       <div className="flex gap-5 items-center">
-        <img src={user} alt="" />
-        <Link to='/auth/login' className="btn btn-primary py-2">Login</Link>
+        <img className="w-10 rounded-full" src={`${user ? user.photoURL : userIcon}`} alt="" />
+        {user ? (
+          <Link onClick={handleLogOut} className="btn btn-primary py-2">
+            Log Out
+          </Link>
+        ) : (
+          <Link to="/auth/login" className="btn btn-primary py-2">
+            Login
+          </Link>
+        )}
+        {/* <Link to='/auth/login' className="btn btn-primary py-2">Login</Link> */}
       </div>
     </div>
   );
